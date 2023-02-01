@@ -21,15 +21,15 @@
           "title": "TEST from firefox on change le titre",
           "slug": "test-from-firefox-on-change-le-titre",
           "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/9KT8tejqgLY8oSRcgxFmyz-test-from-firefox-on-change-le-titre.md",
-          "hasChanged": false
+          "hasChanged": true
         },
         {
-          "published": false,
+          "published": true,
           "id": "pK2ryi4fab54EgJHum3yPn",
           "title": "On ecrit un second post",
           "slug": "on-ecrit-un-second-post",
           "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/pK2ryi4fab54EgJHum3yPn-on-ecrit-un-second-post.md",
-          "hasChanged": true
+          "hasChanged": false
         }
       ]
     }]
