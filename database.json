@@ -8,7 +8,7 @@
       {
         "name": "posts",
         "schema": "++id,title,slug,contentPath,published,hasChanged",
-        "rowCount": 2
+        "rowCount": 3
       }
     ],
     "data": [{
@@ -21,6 +21,14 @@
           "title": "TEST from firefox on change le titre",
           "slug": "test-from-firefox-on-change-le-titre",
           "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/9KT8tejqgLY8oSRcgxFmyz-test-from-firefox-on-change-le-titre.md",
+          "hasChanged": false
+        },
+        {
+          "published": false,
+          "id": "hXue84WHGfHARZBbM36YBe",
+          "title": "Hello Cedric",
+          "slug": "hello-cedric",
+          "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/hXue84WHGfHARZBbM36YBe-hello-cedric.md",
           "hasChanged": true
         },
         {
