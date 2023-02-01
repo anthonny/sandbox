@@ -34,10 +34,10 @@
         {
           "published": true,
           "id": "pK2ryi4fab54EgJHum3yPn",
-          "title": "On ecrit un second post",
-          "slug": "on-ecrit-un-second-post",
-          "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/pK2ryi4fab54EgJHum3yPn-on-ecrit-un-second-post.md",
-          "hasChanged": false
+          "title": "How I use Meteor, Elm and Tailwindcss together",
+          "slug": "how-i-use-meteor-elm-and-tailwindcss-together",
+          "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/pK2ryi4fab54EgJHum3yPn-how-i-use-meteor-elm-and-tailwindcss-together.md",
+          "hasChanged": true
         }
       ]
     }]
