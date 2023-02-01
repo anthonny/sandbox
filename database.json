@@ -16,11 +16,11 @@
       "inbound": true,
       "rows": [
         {
-          "published": false,
+          "published": true,
           "id": "9KT8tejqgLY8oSRcgxFmyz",
-          "title": "TEST from firefox",
-          "slug": "test-from-firefox",
-          "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/9KT8tejqgLY8oSRcgxFmyz-test-from-firefox.md",
+          "title": "TEST from firefox on change le titre",
+          "slug": "test-from-firefox-on-change-le-titre",
+          "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/9KT8tejqgLY8oSRcgxFmyz-test-from-firefox-on-change-le-titre.md",
           "hasChanged": true
         }
       ]
