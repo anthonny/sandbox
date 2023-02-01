@@ -1,0 +1,29 @@
+{
+  "formatName": "dexie",
+  "formatVersion": 1,
+  "data": {
+    "databaseName": "hubpress-dexie-pgDCNaPzEsRKCCSvaRhaKU",
+    "databaseVersion": 1,
+    "tables": [
+      {
+        "name": "posts",
+        "schema": "++id,title,slug,contentPath,published,hasChanged",
+        "rowCount": 1
+      }
+    ],
+    "data": [{
+      "tableName": "posts",
+      "inbound": true,
+      "rows": [
+        {
+          "published": false,
+          "id": "9KT8tejqgLY8oSRcgxFmyz",
+          "title": "",
+          "slug": "",
+          "contentPath": "/projects/pgDCNaPzEsRKCCSvaRhaKU/content/blog/9KT8tejqgLY8oSRcgxFmyz-.md",
+          "hasChanged": true
+        }
+      ]
+    }]
+  }
+}
