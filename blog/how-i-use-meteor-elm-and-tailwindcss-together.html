@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+
+        
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+        
+        <title></title>
+        <meta name="HandheldFriendly" content="True"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        
+        <link rel="stylesheet" type="text/css" href="theme/css/style.css"/>
+
+        <script>
+            var siteUrl = '';
+        </script>
+
+        <script>
+            var localTheme = localStorage.getItem('attila_theme');
+            switch (localTheme) {
+                case 'dark':
+                    document
+                        .documentElement
+                        .classList
+                        .add('theme-dark');
+                    break;
+                case 'light':
+                    document
+                        .documentElement
+                        .classList
+                        .add('theme-light');
+                    break;
+                default:
+                    break;
+            }
+        </script>
+
+        
+
+        
+
+        
+
+        
+    </head>
+
+    <body class="">
+
+        <div class="nav-header">
+            <nav class="nav-wrapper" aria-label="Main">
+                
+                
+            </nav>
+
+            <div class="nav-wrapper-control">
+                <div class="inner">
+                    <a class="nav-menu" role="button">
+                        <i class="icon icon-menu" aria-hidden="true"></i>Menu</a>
+                    <a class="nav-search" title="Search" role="button" data-ghost-search>
+                        <i class="icon icon-search" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="nav-close" role="button" aria-label="Close"></div>
+
+        <section class="page-wrapper">
+
+            
+
+    <div class="progress-container">
+        <span class="progress-bar"></span>
+    </div>
+
+    <header class="post-header " >
+        <div class="inner">
+            <span class="post-info">
+                <span class="post-type">Article</span>
+                
+            </span>
+            <h1 class="post-title">
+                How I use Meteor, Elm and Tailwindcss together
+            </h1>
+            <div class="post-meta">
+                
+                
+            </div>
+            
+        </div>
+    </header>
+
+    <main class="content" role="main">
+        <article class="">
+            <div class="inner">
+
+                <section class="post-content">
+                    <h1>How I use Meteor, Elm and Tailwindcss together</h1>
+<p>I have worked with <a href="https://elm-lang.org/">Elm</a> last year and honestly it was an great experience.<br>
+I really liked it and I would like to use <a href="https://elm-lang.org/">Elm</a> in all my new projects.</p>
+<p>But I also like <a href="https://www.meteor.com/">Meteor</a> and three weeks ago I started using it again.<br>
+I discovered <a href="https://www.meteor.com/">Meteor</a> in 2015, I gave a <a href="https://www.youtube.com/watch?v=AxIvfQXTqVo">talk about it</a> and it still feels like &quot;Wow!&quot; when you start a project.</p>
+<p>So in this post I will explain how I make the two work together and how to add <a href="https://tailwindcss.com">Tailwindcss</a> for the UI part (because I love <a href="https://tailwindcss.com">Tailwindcss</a> too 😍), from scratch.</p>
+<p>I will also explain how to link an existing project to <a href="https://www.meteor.com/">Meteor</a> with a Todo app.</p>
+<h2>Prerequisite</h2>
+<p>You only need two things:</p>
+<ul>
+<li>Your favourite IDE (VSCode with the <a href="https://marketplace.visualstudio.com/items?itemName=Elmtooling.elm-ls-vscode">Elm extension</a> fits very well)</li>
+<li>A browser</li>
+</ul>
+<p>You don't need to install NPM, Node or Mongo.<br>
+All this stuff is already packaged in <a href="https://www.meteor.com/">Meteor</a> environment.</p>
+<p>So to run a NPM command we will use <code>meteor npm xxx</code>, and for Mongo, we will use <code>meteor mongo</code>.</p>
+<p>So let's begin 😁</p>
+<h2>Meteor</h2>
+<h3>Install Meteor</h3>
+<p><img src="https://user-images.githubusercontent.com/2006548/84738510-53981b80-afaa-11ea-8d02-cdf6c42c26c0.png" alt="Meteor install page"></p>
+<p>Here are the commands to install <a href="https://www.meteor.com/">Meteor</a> on OSX/Linux and Windows<br>
+OSX / Linux</p>
+<pre><code class="language-shell"># OSX/Linux
+curl https://install.meteor.com/ | sh
+
+# Windows
+choco install meteor
+</code></pre>
+<p>For more information about the installation, please refer to the official documentation here https://www.meteor.com/install</p>
+<h3>Create a project</h3>
+<p>Let's start by creating an empty project</p>
+<pre><code class="language-shell">meteor create meteor-elm-app --bare
+cd meteor-elm-app
+</code></pre>
+<p>This <code>--bare</code> option will create an empty project with static-html instead of blaze and without autopublish and insecure.</p>
+<p>For more information about the command create, follow the link https://docs.meteor.com/commandline.html#meteorcreate</p>
+<h3>Add typescript</h3>
+<p>Adding Typescript is really simple.<br>
+Just run these two commands</p>
+<pre><code class="language-shell"># under meteor-elm-app
+meteor add typescript
+meteor npm i -D @types/meteor @types/mocha
+</code></pre>
+<p>Create a tsconfig.json under the directory <strong>meteor-elm-app</strong></p>
+<pre><code class="language-json">{
+    &quot;compilerOptions&quot;: {
+      /* Basic Options */
+      &quot;target&quot;: &quot;es2018&quot;,
+      &quot;module&quot;: &quot;esNext&quot;,
+      &quot;lib&quot;: [&quot;esnext&quot;, &quot;dom&quot;],
+      &quot;allowJs&quot;: true,
+      &quot;checkJs&quot;: false,
+      &quot;incremental&quot;: false,
+      &quot;noEmit&quot;: true,
+  
+      /* Strict Type-Checking Options */
+      &quot;strict&quot;: true,
+      &quot;noImplicitAny&quot;: true,
+      &quot;strictNullChecks&quot;: true,
+  
+      /* Additional Checks */
+      &quot;noUnusedLocals&quot;: true,
+      &quot;noUnusedParameters&quot;: true,
+      &quot;noImplicitReturns&quot;: false,
+      &quot;noFallthroughCasesInSwitch&quot;: false,
+  
+      /* Module Resolution Options */
+      &quot;baseUrl&quot;: &quot;.&quot;,
+      &quot;paths&quot;: {
+        /* Support absolute ~imports/* with a leading '/' */
+        &quot;/*&quot;: [&quot;*&quot;]
+      },
+      &quot;moduleResolution&quot;: &quot;node&quot;,
+      &quot;resolveJsonModule&quot;: true,
+      &quot;types&quot;: [&quot;node&quot;, &quot;mocha&quot;],
+      &quot;esModuleInterop&quot;: true,
+      &quot;preserveSymlinks&quot;: true,
+    },
+    &quot;exclude&quot;: [
+      &quot;./.meteor/**&quot;,
+      &quot;./packages/**&quot;
+    ]
+  }
+</code></pre>
+<p>This configuration comes from the typescript template provided by <a href="https://www.meteor.com/">Meteor</a>.<br>
+I just removed the support of JSX.</p>
+<h3>Create the file structure</h3>
+<p>We will setup a simple file structure here.<br>
+For more complex projects, you should follow the guideline provided by <a href="https://www.meteor.com/">Meteor</a> https://guide.meteor.com/structure.html#javascript-structure</p>
+<p>To initialise the file structure, run these commands</p>
+<pre><code class="language-shell"># under meteor-elm-app
+mkdir client server imports/api
+touch client/main.html client/main.ts client/main.css server/main.ts
+</code></pre>
+<p>Your project folder should look like this:</p>
+<pre><code class="language-shell"># under meteor-elm-app
+❯ tree -I node_modules                                              
+.
+├── client
+│   ├── main.css
+│   ├── main.html
+│   └── main.ts
+├── imports
+│   └── api
+├── package-lock.json
+├── package.json
+├── server
+│   └── main.ts
+└── tsconfig.json
+
+4 directories, 7 files
+</code></pre>
+<p>We will update the <strong>package.json</strong> file to define the main modules in our <a href="https://www.meteor.com/">Meteor</a> app:</p>
+<pre><code class="language-json">&quot;meteor&quot;: {
+    &quot;mainModule&quot;: {
+        &quot;client&quot;: &quot;client/main.ts&quot;,
+        &quot;server&quot;: &quot;server/main.ts&quot;
+    }
+}
+</code></pre>
+<p>At this point your <strong>package.json</strong> file should be like:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;meteor-elm-app&quot;,
+  &quot;private&quot;: true,
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;meteor run&quot;
+  },
+  &quot;meteor&quot;: {
+    &quot;mainModule&quot;: {
+      &quot;client&quot;: &quot;client/main.ts&quot;,
+      &quot;server&quot;: &quot;server/main.ts&quot;
+    }
+  },
+  &quot;dependencies&quot;: {
+    &quot;@babel/runtime&quot;: &quot;^7.8.3&quot;,
+    &quot;meteor-node-stubs&quot;: &quot;^1.0.0&quot;
+  }
+}
+
+</code></pre>
+<p>If you need more informations about this mainModule options, you can read the content of this pull request https://github.com/meteor/meteor/pull/9690</p>
+<p>We now need to add some basic content to the <strong>main.html</strong> file:</p>
+<pre><code class="language-html">&lt;head&gt;
+  &lt;title&gt;meteor-elm-app&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;div id=&quot;main&quot;&gt;Elm app will be here&lt;/div&gt;
+&lt;/body&gt;
+</code></pre>
+<h3>Checkpoint</h3>
+<p>Lets check if everything is OK before starting with <a href="https://elm-lang.org/">Elm</a>.<br>
+Start your <strong>meteor</strong> server:</p>
+<pre><code class="language-shell"># under meteor-elm-app
+meteor
+</code></pre>
+<p>Open http://localhost:3000 on your favorite browser<br>
+You should see this:</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84446744-8195fc80-ac46-11ea-9da8-4fd2033898bf.png" alt="Checkpoint"></p>
+<h2>Elm</h2>
+<h3>Install Parcel</h3>
+<p>We will use <a href="https://parceljs.org/">Parcel</a> to build our <a href="https://elm-lang.org/">Elm</a> application and we will use the result of this build in our <a href="https://www.meteor.com/">Meteor</a> application</p>
+<p>To install <a href="https://parceljs.org/">Parcel</a>, run this command</p>
+<pre><code class="language-shell">meteor npm i -D parcel
+</code></pre>
+<h3>Create a Meteor package</h3>
+<p>This <a href="https://www.meteor.com/">Meteor</a> package will contain our <a href="https://elm-lang.org/">Elm</a> application and we will use this package inside the <a href="https://www.meteor.com/">Meteor</a> application.</p>
+<p>We use a Package because it allows us to isolate our <a href="https://elm-lang.org/">Elm</a> application from the rest of the <a href="https://www.meteor.com/">Meteor</a> context.<br>
+It is also really useful if we want to remove our <a href="https://elm-lang.org/">Elm</a> application or if one we don't want to use <a href="https://www.meteor.com/">Meteor</a> anymore.</p>
+<p>Let's start by creating some folders:</p>
+<pre><code class="language-shell">mkdir -p packages/elm-app/{app,dist}
+</code></pre>
+<p>The <strong>app</strong> folder will contain the sources of our <a href="https://elm-lang.org/">Elm</a> application (<a href="https://elm-lang.org/">Elm</a>, TS and CSS files).<br>
+The <strong>dist</strong> folder will contain the result of the build made by <a href="https://parceljs.org/">Parcel</a>.</p>
+<p>Because we will build with <a href="https://parceljs.org/">Parcel</a> and not with <a href="https://www.meteor.com/">Meteor</a>, we will create a new file at the root of the <strong>meteor-elm-app</strong> called <strong>.meteorignore</strong></p>
+<pre><code class="language-shell">#under meteor-elm-app
+touch .meteorignore
+</code></pre>
+<p>Then add this line inside this new file:</p>
+<pre><code>/packages/elm-app/app/**/*
+</code></pre>
+<p>Because we don't want to push the <strong>dist</strong> and the <strong>elm-stuff</strong> folders on our repository, we will add them in the <strong>.gitignore</strong> located under the folder <strong>meteor-elm-app</strong></p>
+<pre><code>dist
+elm-stuff
+</code></pre>
+<p>Now, let's create a <strong>package.js</strong> file in our package:</p>
+<pre><code class="language-shell">#under meteor-elm-app/packages/elm-app
+touch package.js
+</code></pre>
+<p>And add the following content in this file:</p>
+<pre><code class="language-js">Package.describe({
+    name: 'elm-app',
+    version: '1.0.0',
+    summary: 'elm app',
+    documentation: 'add your elm app into meteor',
+});
+
+Package.onUse(function (api) {
+    api.versionsFrom('1.10.2');
+    api.use('modules');
+    api.addFiles('dist/elm-app.css', 'client');
+    api.mainModule('dist/elm-app.js', 'client');
+});
+</code></pre>
+<p><strong>Package.describe</strong> says that our package:</p>
+<ul>
+<li>is called <code>elm-app</code>,</li>
+<li>is in version <code>1.0.0</code></li>
+</ul>
+<p><code>Package.onUse</code> says that our package:</p>
+<ul>
+<li>is implemented to be use with <a href="https://www.meteor.com/">Meteor</a> <code>1.10.2</code>,</li>
+<li>uses the <code>modules</code> package, so we will be able to use <code>import {} from ''</code>,</li>
+<li>will add the <code>dist/elm-app.css</code> file in the client when it will be loaded,</li>
+<li>have a main js file for this package called <code>dist/elm-app.js</code>.</li>
+</ul>
+<p>If you are using <strong>elm-css</strong> and if you don't need specific css classes in your app, you can remove <code>api.addFiles('dist/elm-app.css', 'client');</code> from the <strong>package.js</strong> file.</p>
+<p>For more informations about the Package.js file, see https://docs.meteor.com/api/packagejs.html</p>
+<h3>Create the app</h3>
+<p>We will create our <a href="https://elm-lang.org/">Elm</a> application under the folder <strong>packages/elm-app/app</strong>.</p>
+<p>We need to install <a href="https://elm-lang.org/">Elm</a>:</p>
+<pre><code class="language-shell">meteor npm i -D elm elm-format
+</code></pre>
+<p>Elm-format is not mandatory but you should use it with your IDE to format on save and to avoid problem at compile time</p>
+<p>Then we will initialise our app with the following command:</p>
+<pre><code class="language-shell">#under meteor-elm-app/packages/elm-app/app
+meteor npx elm init
+</code></pre>
+<p>Validate the creation of the <strong>elm.json</strong> file and we are good 👍.</p>
+<p>At this step, your folder should be like this:</p>
+<pre><code class="language-shell">#under meteor-elm-app
+❯ tree -I 'node_modules|.meteor' -a
+.
+├── .gitignore
+├── .meteorignore
+├── client
+│   ├── main.css
+│   ├── main.html
+│   └── main.ts
+├── imports
+│   └── api
+├── package-lock.json
+├── package.json
+├── packages
+│   └── elm-app
+│       ├── app
+│       │   ├── elm.json
+│       │   └── src
+│       ├── dist
+│       └── package.js
+├── server
+│   └── main.ts
+└── tsconfig.json
+
+9 directories, 11 files
+</code></pre>
+<p>In a first time, we will create a simple <a href="https://elm-lang.org/">Elm</a> application.</p>
+<p>Create a <strong>Main.elm</strong> file inside the folder <strong>packages/elm-app/app/src</strong> with this content:</p>
+<pre><code class="language-elm">module Main exposing(main)
+
+import Browser
+import Html exposing (Html, text)
+
+type alias Model = String
+
+main : Program () Model msg
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
+init: () -&gt; (Model, Cmd msg)
+init _ =
+    (&quot;Hello from Elm app&quot;, Cmd.none)
+
+view: Model -&gt; Html msg
+view model =
+    text model
+
+update: msg -&gt; Model -&gt; (Model, Cmd msg)
+update _ model =
+    (model, Cmd.none)
+
+subscriptions : Model -&gt; Sub msg
+subscriptions _ =
+    Sub.none
+</code></pre>
+<h3>The CSS main file</h3>
+<p>In the folder <strong>meteor-elm-app/packages/elm-app/app</strong>, create an empty <strong>main.scss</strong> SCSS file (or CSS if you prefer) that we will use later to add some style in our <a href="https://elm-lang.org/">Elm</a> application.</p>
+<p>NB: if you use <strong>elm-css</strong> and you don't need a stylesheet, skip this step and remove the line <code>api.addFiles('dist/elm-app.css', 'client');</code> in the <strong>package.js</strong> file</p>
+<h3>The Package mainModule</h3>
+<p>In the folder <strong>meteor-elm-app/packages/elm-app/app</strong>, create a file <strong>index.ts</strong> that will <strong>mount</strong> our <a href="https://elm-lang.org/">Elm</a> application and export the <strong>ports</strong>.</p>
+<p>A simple version could be:</p>
+<pre><code class="language-js">import './main.scss'
+const { Elm } = require('./src/Main.elm')
+
+export const init = (configuration: any) =&gt; {
+    const app = Elm.Main.init(configuration)
+    return app.ports
+}
+</code></pre>
+<p>But because we want to <strong>Type</strong> things as much as possible, let's create this <strong>index.ts</strong> like this:</p>
+<pre><code class="language-js">import './main.scss'
+const { Elm } = require('./src/Main.elm')
+
+interface Flags {}
+
+export interface Configuration {
+    node: HTMLElement | null,
+    flags: Flags
+}
+
+export interface Ports {}
+
+export const init: (configuration: Configuration) =&gt; Ports = (configuration) =&gt; {
+    const app = Elm.Main.init(configuration)
+    return app.ports
+}
+</code></pre>
+<p>With this definition, when we will need some flags or some ports, we will add the new stuff in our interface and the client will have to implement them.</p>
+<p>If you are using <strong>CSS</strong> instead of <strong>SCSS</strong> then update the file import accordingly</p>
+<h3>Build with Parcel</h3>
+<p>Let's create a build script in our <strong>package.json</strong> file:</p>
+<pre><code class="language-json">&quot;elm:build&quot;: &quot;parcel build packages/elm-app/app/index.ts -d packages/elm-app/dist --out-file elm-app.js --no-cache&quot;,
+</code></pre>
+<p>This script will build our application in a file <strong>elm-app.js</strong> (and <strong>elm-app.css</strong>) and put it in the folder <strong>packages/elm-app/dist</strong> (the one we added in our <strong>.gitignore</strong>)</p>
+<p>We can test our script</p>
+<pre><code class="language-shell">#under meteor-elm-app
+meteor npm run elm:build
+</code></pre>
+<p>If everything is ok, you should see these lines:</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84450020-4ea43680-ac4f-11ea-9b45-ce0dfb572835.png" alt=""></p>
+<h3>Add our package to Meteor</h3>
+<p>Now that we have a package, we have to add it in our <a href="https://www.meteor.com/">Meteor</a> configuration.</p>
+<p>You must have run the previous build command before adding the package because without a dist folder, you will not be able to add it.</p>
+<p>Execute this command to add the package</p>
+<pre><code class="language-shell">#under meteor-elm-app
+meteor add elm-app
+</code></pre>
+<p>You should see</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84450082-7abfb780-ac4f-11ea-92f4-db936ee6f726.png" alt=""></p>
+<h3>Post install</h3>
+<p>To avoid to have to compile manually each time someone clone the repository, we will add a <code>postinstall</code> script in the <strong>package.json</strong> file:</p>
+<pre><code class="language-json">&quot;postinstall&quot;: &quot;meteor npm run elm:build&quot;,
+</code></pre>
+<h2>Use the Elm application in our Meteor client</h2>
+<p>Now that we have our <a href="https://elm-lang.org/">Elm</a> application, it is time to import it in the client side of our <a href="https://www.meteor.com/">Meteor</a> application</p>
+<p>In the <strong>client/main.ts</strong> file, add the following code:</p>
+<pre><code class="language-js">import { init } from &quot;meteor/elm-app&quot;;
+import { Meteor } from 'meteor/meteor';
+
+Meteor.startup(() =&gt; {
+    const ports = init({
+        node: document.getElementById(&quot;main&quot;),
+        flags: {}
+    })
+})
+</code></pre>
+<p>In this code, we import the <code>init</code> function from the package <code>meteor/elm-app</code> which is the package we have just created (you can see it in the file <strong>.meteor/packages</strong>).<br>
+Then we call it to mount our <a href="https://elm-lang.org/">Elm</a> application on the node <code>document.getElementById(&quot;main&quot;)</code> (the one we have created in the <strong>main.html</strong> file)</p>
+<p>Now, if you start your meteor application by running the <code>meteor</code> command, on http://localhost:3000 you should see:</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84450699-4a791880-ac51-11ea-9c51-c0046cc273a0.png" alt=""></p>
+<p>But...</p>
+<h3>The typing is not good</h3>
+<p>You should see that your import is underlined in red:</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84450825-9c21a300-ac51-11ea-9243-78a13ecad82d.png" alt=""></p>
+<p>To fix that, we will add a declaration file:</p>
+<pre><code class="language-shell">#under meteor-elm-app
+mkdir -p types/meteor
+touch types/meteor/elm-app.d.ts
+</code></pre>
+<p>And add the following content</p>
+<pre><code class="language-js">declare module 'meteor/elm-app' {
+    export const init: (
+        configuration: import('/packages/elm-app/app').Configuration,
+    ) =&gt; import('/packages/elm-app/app').Ports;
+}
+</code></pre>
+<p>Now each time we will change the definition of the type <code>Flag</code> or the type <code>Port</code> inside our <a href="https://elm-lang.org/">Elm</a> application, we will be sure to know if we have some stuff to fix in the <a href="https://www.meteor.com/">Meteor</a> client 💪.</p>
+<h2>Live Reload</h2>
+<p>Because we don't want to build manually our <a href="https://elm-lang.org/">Elm</a> application each time we make a change, we will setup the live reload</p>
+<p>We will install some packages to help us</p>
+<pre><code class="language-shell">#under meteor-elm-app
+meteor npm i -D concurrently wait-on rimraf
+</code></pre>
+<p>Then we will create an new script in our <strong>package.json</strong> file:</p>
+<pre><code class="language-json">&quot;elm:watch&quot;: &quot;parcel watch packages/elm-app/app/index.ts -d packages/elm-app/dist --out-file elm-app.js&quot;,
+</code></pre>
+<p>With <code>elm:watch</code>, parcel will rebuild our app each time we make a change in <a href="https://elm-lang.org/">Elm</a>, TS or SCSS files under the folder <strong>packages/elm-app/app</strong>.</p>
+<p>And because <code>parcel watch</code> create a <strong>.cache</strong> folder, we will add it to the <strong>.gitignore</strong> file.<br>
+The content of your <strong>.gitignore</strong> should be like this:</p>
+<pre><code>node_modules/
+dist
+elm-stuff
+.cache
+</code></pre>
+<p>Now to run parcel and meteor in parallel, we will update the <strong>package.json</strong> file.<br>
+We will rename the script <code>start</code> to <code>meteor:run</code>, and redefine the script <code>start</code>:</p>
+<pre><code class="language-json">&quot;meteor:run&quot;: &quot;meteor run&quot;,
+&quot;start&quot;: &quot;rimraf \&quot;./packages/elm-app/dist/*\&quot; &amp;&amp; concurrently -n \&quot;parcel,meteor\&quot; -c \&quot;magenta,green\&quot; \&quot;meteor npm run elm:watch\&quot; \&quot;wait-on ./packages/elm-app/dist/elm-app.js &amp;&amp; meteor npm run meteor:run\&quot;&quot;,
+</code></pre>
+<p>The script <code>start</code> call <code>rimraf</code> to clean the <strong>dist</strong> folder, then we call <code>concurrently</code> to run two tasks:</p>
+<ul>
+<li>the <code>parcel</code> one, that will be log in <code>magenta</code> and its command is <code>meteor npm run elm:watch</code></li>
+<li>the <code>meteor</code> one, that will be log in <code>green</code> and its command is <code>wait-on ./packages/elm-app/dist/elm-app.js &amp;&amp; meteor npm run meteor:run</code> (the <code>wait-on</code> command is use to wait the build from Parcel)</li>
+</ul>
+<p>Now each time we will change our content under <strong>packages/elm-app/app</strong>, <a href="https://parceljs.org/">Parcel</a> will rebuild incrementally our application and update the content under the <strong>dist</strong> folder, so <a href="https://www.meteor.com/">Meteor</a> will detect a change and refresh the main application.</p>
+<p>You can now start your application by running:</p>
+<pre><code class="language-shell">#under meteor-elm-app
+meteor npm start
+</code></pre>
+<p>You can make some changes in your <code>Main.elm</code> file and see that everything will automatically refresh in your browser.</p>
+<h2>Tailwindcss</h2>
+<p>Tailwindcss is a npm package, so we will install it like this</p>
+<pre><code class="language-shell">meteor npm i -D tailwindcss
+</code></pre>
+<p>For more informations about Tailwindcss, see https://tailwindcss.com/docs/installation</p>
+<p>We need to initialize Tailwincss:</p>
+<pre><code class="language-shell">#under meteor-elm-app/packages/elm-app/app
+meteor npx tailwindcss init
+</code></pre>
+<p>This command will generate a file called <strong>tailwind.config.js</strong></p>
+<p>We can now edit the file <strong>main.scss</strong> inside our app (packages/elm-app/app/main.scss) to use <a href="https://tailwindcss.com/">Tailwindcss</a></p>
+<pre><code class="language-css">@tailwind base;
+@tailwind components;
+@tailwind utilities;
+</code></pre>
+<p>We will configure <strong>postcss</strong> to use <strong>autoprefixer</strong> and the <strong>tailwind.config.js</strong> file.</p>
+<pre><code class="language-shell">#under meteor-elm-app/packages/elm-app/app
+touch postcss.config.js
+</code></pre>
+<p>And add this content to this file</p>
+<pre><code class="language-js">const path = require(&quot;path&quot;);
+
+module.exports = {
+  plugins: [
+    require(&quot;tailwindcss&quot;)(path.join(__dirname, &quot;tailwind.config.js&quot;)),
+    require(&quot;autoprefixer&quot;),
+  ],
+};
+</code></pre>
+<p>We can now edit our <strong>Main.elm</strong> to add a CSS class (<code>text-green-500</code>) from Tailwindcss:</p>
+<pre><code class="language-elm">view: Model -&gt; Html msg
+view model =
+    div [class &quot;text-green-500&quot;] [text model]
+</code></pre>
+<p>Then if you (re)start your server, you should see this:</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84566211-bfdb0b00-ad6f-11ea-86fa-927a901ae327.png" alt=""></p>
+<p>Congratulations 🎉! You made your first application with <a href="https://elm-lang.org/">Elm</a>, <a href="https://www.meteor.com/">Meteor</a> and Tailwindcss 👏.</p>
+<h2>The Todos application</h2>
+<p>It is really awesome right? What? You don't want to use <a href="https://www.meteor.com/">Meteor</a> just to expose static file? Hmm ok, let's go with the Todos application</p>
+<p>Because the goal of this post is not to learn how to code in <a href="https://elm-lang.org/">Elm</a>, we will start with an application I wrote for the occasion.</p>
+<p><img src="https://user-images.githubusercontent.com/2006548/84833215-132eb100-b02f-11ea-836b-63a14a6dbe74.png" alt=""></p>
+<p>This application is not linked with <a href="https://www.meteor.com/">Meteor</a> yet, there is no ports defined.<br>
+The goal is to save each Todo in MongoDB and to be able to sync two browser.</p>
+<h3>Update the Main.elm</h3>
+<p>Replace the content of the Main.elm file with this gist https://gist.github.com/anthonny/1b6a73782a6ad94c611849b9a5d4cbbf</p>
+<p>We will need to add <code>elm/svg</code>:</p>
+<pre><code class="language-shell">#under meteor-elm-app/packages/elm-app/app
+meteor npx elm install elm/svg
+</code></pre>
+<p>Then start your application</p>
+<pre><code>meteor npm start
+</code></pre>
+<p>You can try the application, actually we can:</p>
+<ul>
+<li>Add a Todo</li>
+<li>Switch the status of a Todo</li>
+<li>Filter Todos by status</li>
+</ul>
+<p>We will keep the filtering part in the client, but we want to:</p>
+<ul>
+<li>Load Todos from MongoDB</li>
+<li>Save new Todos in MongoDB</li>
+<li>Switch the status and save it in MongoDB</li>
+</ul>
+<p>But let's start with the backend</p>
+<h3>Define the Todos collection and methods</h3>
+<p>Under the folder <strong>meteor-elm-app/imports/api</strong>, create a file <strong>todos.ts</strong>.</p>
+<p>In this file we will define what is a Todo, and create the collection:</p>
+<pre><code class="language-js">import { Mongo } from &quot;meteor/mongo&quot;;
+import { Meteor } from &quot;meteor/meteor&quot;;
+
+export interface Todo {
+  _id?: string;
+  value: string;
+  status: &quot;checked&quot; | &quot;unchecked&quot;;
+  createdAt: Date;
+}
+
+export const TodosCollection = new Mongo.Collection&lt;Todo&gt;(&quot;todos&quot;);
+</code></pre>
+<p>Then in the same file, we will add two <a href="https://www.meteor.com/">Meteor</a> methods, one to add a Todo and another to switch the status of Todo with its ID:</p>
+<pre><code class="language-js">Meteor.methods({
+  &quot;todos.addTodo&quot;(value: string) {
+    if (value !## &quot;&quot;) {
+      TodosCollection.insert({
+        value,
+        status: &quot;unchecked&quot;,
+        createdAt: new Date(),
+      });
+    }
+  },
+  &quot;todos.toggleStatus&quot;(todoId: string) {
+    const todo = TodosCollection.findOne({ _id: todoId });
+    if (!todo) {
+      throw new Meteor.Error(&quot;Todo not found&quot;);
+    }
+    
+    const newStatus = todo.status ### &quot;checked&quot; ? &quot;unchecked&quot; : &quot;checked&quot;;
+
+    TodosCollection.update({ _id: todoId }, { $set: { status: newStatus } });
+  },
+});
+</code></pre>
+<p>And at the end of the file, we will publish our collection on the server side:</p>
+<pre><code class="language-js">if (Meteor.isServer) {
+  Meteor.publish(&quot;todos&quot;, function todos() {
+    return TodosCollection.find({}, { sort: { createdAt: -1 } });
+  });
+}
+</code></pre>
+<p>Finally we need to import this file in the file <strong>server/main.ts</strong>:</p>
+<pre><code class="language-js">import &quot;/imports/api/todos&quot;;
+</code></pre>
+<p>The server side in now ready.</p>
+<h3>Add ports to the Elm application</h3>
+<p>We will start by installing <code>elm/json</code> and <code>NoRedInk/elm-json-decode-pipeline</code> to decode our Todos:</p>
+<pre><code class="language-shell">#under meteor-elm-app/packages/elm-app/app
+meteor npx elm install elm/json
+meteor npx elm install NoRedInk/elm-json-decode-pipeline
+</code></pre>
+<p>So we will create 3 ports:</p>
+<ul>
+<li>addTodo: <code>port addTodo : String -&gt; Cmd msg</code></li>
+<li>toggleStatus: <code>port toggleStatus : String -&gt; Cmd msg</code></li>
+<li>receiveTodos: <code>port receiveTodos : (Decode.Value -&gt; msg) -&gt; Sub msg</code></li>
+</ul>
+<p>Let's put these port at the end of our <strong>Main.elm</strong> file:</p>
+<pre><code class="language-elm">port module Main exposing(main)
+
+import Json.Decode as Decode
+import Json.Decode.Pipeline exposing (required)
+
+...
+
+port addTodo : String -&gt; Cmd msg
+
+port toggleStatus : String -&gt; Cmd msg
+
+port receiveTodos : (Decode.Value -&gt; msg) -&gt; Sub msg
+
+</code></pre>
+<p>We have to change the type of the Todo.id to use a <code>String</code> because of the id in Mongo:</p>
+<pre><code class="language-elm">type alias Todo =
+    { id : String
+    , value : String
+    , status : TodoStatus
+    }
+
+type Msg
+    = InputChanged String
+    | AddTodo
+    | ToggleStatus String -- ToggleStatus now need a String not a Int
+    | FilterBy Filter
+
+</code></pre>
+<p>We need a new variant <code>ReceiveTodos (List Todo)</code> for <code>Msg</code> to receive todos:</p>
+<pre><code class="language-elm">type Msg
+    = InputChanged String
+    | AddTodo
+    | ToggleStatus String
+    | FilterBy Filter
+    | ReceiveTodos (List Todo)
+</code></pre>
+<p>We also change the <code>update</code> function because we will not update the <code>todos</code> list anymore.<br>
+We will get the one we will receive from the port <code>receiveTodos</code></p>
+<pre><code class="language-elm">update : Msg -&gt; Model -&gt; ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        InputChanged value -&gt;
+            ( { model | todo = value }, Cmd.none )
+
+        AddTodo -&gt;
+            if String.isEmpty (String.trim model.todo) then
+                ( model, Cmd.none )
+
+            else
+                ( { model | todo = &quot;&quot; }, addTodo model.todo )
+
+        ToggleStatus todoId -&gt;
+            ( model, toggleStatus todoId )
+
+        FilterBy selectedFilter -&gt;
+            ( { model | filter = selectedFilter }, Cmd.none )
+
+        ReceiveTodos todos -&gt;
+            ( { model | todos = todos }, Cmd.none )
+</code></pre>
+<p>To finish with the <a href="https://elm-lang.org/">Elm</a> part, we need a subscription and some decoders to receive our Todos:</p>
+<pre><code class="language-elm">subscriptions : Model -&gt; Sub Msg
+subscriptions _ =
+    receiveTodos
+        (\value -&gt;
+            Decode.decodeValue decodeTodos value
+                |&gt; Result.withDefault []
+                |&gt; ReceiveTodos
+        )
+
+
+decodeTodo : Decode.Decoder Todo
+decodeTodo =
+    Decode.succeed Todo
+        |&gt; required &quot;id&quot; Decode.string
+        |&gt; required &quot;value&quot; Decode.string
+        |&gt; required &quot;status&quot; decodeStatus
+
+
+decodeStatus : Decode.Decoder TodoStatus
+decodeStatus =
+    Decode.string
+        |&gt; Decode.andThen
+            (\status -&gt;
+                case status of
+                    &quot;checked&quot; -&gt;
+                        Decode.succeed Checked
+
+                    _ -&gt;
+                        Decode.succeed Unchecked
+            )
+
+
+decodeTodos : Decode.Decoder (List Todo)
+decodeTodos =
+    Decode.list decodeTodo
+</code></pre>
+<p>If you remember, we have defined an interface <code>Ports</code> in the file <strong>meteor-elm-app/packages/elm-app/app/index.ts</strong>.<br>
+It is time to add some definitions:</p>
+<pre><code class="language-js">interface Todo {
+  id: string;
+  value: string;
+  status: &quot;checked&quot; | &quot;unchecked&quot;;
+}
+
+export interface Ports {
+  addTodo?: {
+    subscribe: (fn: (todo: string) =&gt; void) =&gt; void;
+  };
+  toggleStatus?: {
+    subscribe: (fn: (todoId: string) =&gt; void) =&gt; void;
+  };
+  receiveTodos?: {
+    send: (todos: Todo[]) =&gt; void;
+  };
+}
+</code></pre>
+<h3>Link ports to Meteor.methods and subscriptions</h3>
+<p>We have some piece of code in <a href="https://elm-lang.org/">Elm</a> and some piece of code in the server side.<br>
+Now we need to link them together, and we will do that in the file <strong>client/main.ts</strong></p>
+<p>We will need to import our TodosCollection and the <a href="https://www.meteor.com/">Meteor</a> Tracker</p>
+<pre><code class="language-js">import { Tracker } from &quot;meteor/tracker&quot;;
+import { TodosCollection } from &quot;/imports/api/todos&quot;;
+</code></pre>
+<p>Then we will subscribe to the output ports:</p>
+<pre><code class="language-js">  ports.addTodo?.subscribe((todo) =&gt; {
+    Meteor.call(&quot;todos.addTodo&quot;, todo, (err: Error) =&gt; {
+      if (err) {
+        // Maybe we should pass this error to Elm
+        console.log(&quot;error&quot;, err);
+        return;
+      }
+    });
+  });
+
+  ports.toggleStatus?.subscribe((todoId) =&gt; {
+    Meteor.call(&quot;todos.toggleStatus&quot;, todoId, (err: Error) =&gt; {
+      if (err) {
+        // Maybe we should pass this error to Elm
+        console.log(&quot;error&quot;, err);
+        return;
+      }
+    });
+  });
+</code></pre>
+<p>Here each time <code>addTodo</code> is called from <a href="https://elm-lang.org/">Elm</a>, we add a new Todo with a Meteor.call, same for the toggleStatus.</p>
+<p>Of course we should manage the error, maybe it could be a good exercice 😁</p>
+<p>Finally we need to send todos everytime the collection change.<br>
+To do that, we use <code>Tracker.autorun</code> that will run the callback when necessary.</p>
+<pre><code class="language-js">  // We use the Tracker.autorun to send todos each time the fetch result
+  // changes
+  Tracker.autorun(() =&gt; {
+    // Maybe one day we will need to manage the subscription
+    const subscription = Meteor.subscribe(&quot;todos&quot;);
+
+    const todos = TodosCollection.find({}, { sort: { createdAt: 1 } }).fetch();
+
+    ports.receiveTodos?.send(
+      todos.map((todo) =&gt; ({
+        id: todo._id || &quot;&quot;,
+        value: todo.value,
+        status: todo.status,
+      }))
+    );
+  });
+</code></pre>
+<p>Now you can restart your server, open two browsers on http://localhost:3000 and see that everything is saved and sync 👏.</p>
+<h2>Conclusion</h2>
+<p>I hope you enjoyed this content as much as I enjoyed writing it.<br>
+Three weeks ago I was sad because I could not use <a href="https://www.meteor.com/">Meteor</a> with <a href="https://elm-lang.org/">Elm</a>, so I started using it with React and Typescript 😳.</p>
+<p>Today, I dropped React and I use <a href="https://elm-lang.org/">Elm</a> again and it is really pleasant.</p>
+<p>If you liked this post, do not hesitate to share it on your favorite social networks and if you are interested by this kind of content, you can follow me on twitter <a href="https://twitter.com/anthonny_q">@anthonny_q</a>.</p>
+<p>If you have any feedbacks, comments are open and you can find the sources of the project here https://github.com/anthonny/meteor-elm-todos.</p>
+<p>Special thanks to <a href="https://forums.meteor.com/u/ni-ko-o-kin">ni-ko-o-kin</a>, as I was very inspired by his <a href="https://forums.meteor.com/t/meteor-elm-example/50244">post</a>.</p>
+<p>Big thanks to <a href="https://twitter.com/yanndanthu">Yann Danthu</a> for the review of this post 😘.</p>
+
+                </section>
+
+                <section class="post-footer">
+
+                    <div class="post-share">
+                        <span class="post-info-label">Share}}</span>
+                        <a title="Twitter" aria-label="Twitter" class="twitter" href="https://twitter.com/share?text=&url=" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                            <i class="icon icon-twitter" aria-hidden="true"></i>
+                        </a>
+                        <a title="Facebook" aria-label="Facebook" class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                            <i class="icon icon-facebook" aria-hidden="true"></i>
+                        </a>
+                        <a title="LinkedIn" aria-label="LinkedIn" class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=/&amp;title=" onclick="window.open(this.href, 'linkedin-share', 'width=930,height=720');return false;">
+                            <i class="icon icon-linkedin" aria-hidden="true"></i>
+                        </a>
+                        <a title="Email" aria-label="Email" class="email" href="mailto:?subject=&amp;body=">
+                            <i class="icon icon-mail" aria-hidden="true"></i>
+                        </a>
+                    </div>
+
+                    
+
+                </section>
+
+                
+
+                
+
+                
+
+                
+                <aside class="post-nav">
+
+                    
+                    
+                    <div class="clear"></div>
+                </aside>
+
+            </div>
+        </article>
+    </main>
+
+
+
+            <div class="nav-footer">
+                <nav class="nav-wrapper" aria-label="Footer">
+                    <span class="nav-copy"> &copy; 
+                        
+                        <a class="nav-rss" title="RSS" href="/rss/" target="_blank">
+                            <i class="icon icon-rss" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                    
+                    <span class="nav-credits">Published with
+                        <a href="https://ghost.org">Ghost</a> &bull; Theme
+                        <a href="https://github.com/zutrinken/attila">Attila</a> &bull; <a class="menu-item js-theme" href="#" data-system="System theme" data-dark="Dark theme" data-light="Light theme">
+                            <span class="theme-icon"></span>
+                            <span class="theme-text">System theme</span>
+                        </a>
+                    </span>
+                </nav>
+            </div>
+
+        </section>
+
+        
+        <script type="text/javascript" src="theme/js/script.js"></script>
+
+        
+        
+    <script>
+        $(document).ready(function () {
+            var viewport = $(window);
+            var post = $('.post-content');
+            // Responsive videos with fitVids
+            post.fitVids();
+            // Format code blocks and add line numbers
+            function codestyling() {
+                $('pre code').each(function (i, e) {
+                    // Code highlight
+                    hljs.highlightElement(e);
+                    // No lines for plain text blocks
+                    if (!$(this).hasClass('language-text')) {
+                        var code = $(this);
+                        // Calculate amount of lines
+                        var lines = code
+                            .html()
+                            .split(/\n(?!$)/g)
+                            .length;
+                        var numbers = [];
+                        if (lines > 1) {
+                            lines++;
+                        }
+                        for (i = 1; i < lines; i++) {
+                            numbers += '<span class="line" aria-hidden="true">' + i + '</span>';
+                        }
+                        code
+                            .parent()
+                            .append('<div class="lines">' + numbers + '</div>');
+                    }
+                });
+            }
+            codestyling();
+            // Reading progress bar on window top
+            function readingProgress() {
+                var postBottom = post
+                    .offset()
+                    .top + post.height();
+                var viewportHeight = viewport.height();
+                var progress = 100 - (((postBottom - (viewport.scrollTop() + viewportHeight) + viewportHeight / 3) / (postBottom - viewportHeight + viewportHeight / 3)) * 100);
+                $('.progress-bar').css('width', progress + '%');
+                (progress > 100)
+                    ? $('.progress-container').addClass('complete')
+                    : $('.progress-container').removeClass('complete');
+            }
+            readingProgress();
+            // Trigger reading progress
+            viewport.on({
+                'scroll': function () {
+                    readingProgress();
+                },
+                'resize': function () {
+                    readingProgress();
+                },
+                'orientationchange': function () {
+                    readingProgress();
+                }
+            });
+
+            
+        });
+    </script>
+
+
+        
+        
+
+    </body>
+</html>
